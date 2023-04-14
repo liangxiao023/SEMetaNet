@@ -43,7 +43,7 @@ check_group <- function(group){
 #------------------------------------------------------------------------------#
 # check dimensions and size of argument
 #------------------------------------------------------------------------------#
-check.dim <- function(x,y,ind.method,meta.method,paired){
+check_dim <- function(x,y,ind.method,meta.method,paired){
   K<-length(x)
   nperstudy<-sapply(x,function(y) ncol(y))
   nlabels<-sapply(y,function(z) length(z))
@@ -57,4 +57,45 @@ check.dim <- function(x,y,ind.method,meta.method,paired){
     stop(paste('Argument "paired" should be a logical vecter of size',K))
   }
 }
+
+
+
+#------------------------------------------------------------------------------#
+# check ID type
+#------------------------------------------------------------------------------#
+
+check_id <- function(DEG_list){
+  ## get data ID 
+
+  ## get net ID
+
+  ## alignment
+
+  ## warnings
+
+}
+
+
+
+#------------------------------------------------------------------------------#
+# check support(species and database)
+#------------------------------------------------------------------------------#
+
+check_support <- function(species,database){
+  if (species %in% species_list){
+    if (database %in% database_list)
+
+  }else{
+
+  }
+}
+
+
+
+
+
+
+
+
+
 

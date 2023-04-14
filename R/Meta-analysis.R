@@ -1,6 +1,6 @@
 
 
-FEMR <- function(expr, group, cutoff_FEM = 0.3){
+FEMR <- function(expr, group, cutoff_FEM = 0.05){
   expr <- check_exp(expr)
   check_group(group)
   if (!is.numeric(cutoff_FEM) | length(cutoff_FEM) != 1){
@@ -27,8 +27,6 @@ FEMR <- function(expr, group, cutoff_FEM = 0.3){
   label[which(label==2)] <- -1
   pval <- c(BootMRMR::pval.mbmr(dataExpr, group, round(0.9*Samples), 200, Q=0.5))
   FDR <- p.adjust(pval,method = "BH")
-
-
   res <- list(pval=pval, FDR=FDR)
   return(res)
 }
