@@ -97,9 +97,55 @@ for (i in 1:top) {
 
 
 
-## protein database
+## protein database STRING
 
 
 
 
+
+
+
+
+
+
+
+## get_DEG_expr
+get_DEG_expr <- function(expr, FEMR.res, cutoff = 0.05){
+  if (!is.numeric(cutoff_FEM) | length(cutoff_FEM) != 1){
+    stop("cutoff_FEM should be a single number")
+  }
+  if (cutoff_FEM <= 0 | cutoff_FEM >= 1){
+    stop("cutoff_FEM should be between 0 and 1")
+  }
+
+  if(!is.null(rownames(expr))){
+    index <- which(FEMR.res$FDR < cutoff)
+    gene_id <- names(FEMR.res[index])
+    DEG_expr <- expr[which(rownames(expr) %in% gene_id),]
+  }else{
+    stop("Please entering a matrix with rownames")
+  }
+
+  return(DEG_expr)
+}
+
+
+
+## get_TF
+get_TF <- function(expr, species){
+  if(!is.null(species)){
+    TF_dir <- paste0("../FEMboot/",species,".txt")
+    TF_list <- read.csv(TF_dir)
+    if(!is.null(rownames(expr))){
+      TFs <- rownames(expr)[which(rownames(expr) %in% TF_list)]
+    }
+    else{
+      stop("Please entering a matrix with rownames")
+    }
+  }else{
+    stop("Please entering your species")
+  }
+
+  return(TFs)
+}
 
