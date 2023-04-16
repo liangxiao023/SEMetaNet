@@ -38,28 +38,32 @@ get_prior_grn <- function(data, species, database_type, database){
 
 
 ## pathway database
-species_pathways <- graphtie::pathways(species, database)
-graph <- vector("list",length(species_pathways))
-for (i in 1:length(species_pathways)) {
-  pathway <- species_pathways[[i]]
-  g <- pathwayGraph(pathway)
-  g <- graph_from_graphnel(g)
-  graph[[i]] <- g
+get_pathway_grn <- function(species, database){
+  check_support(species, database)
+  species_pathways <- graphtie::pathways(species, database)
+  graph <- vector("list",length(species_pathways))
+  for (i in 1:length(species_pathways)) {
+    pathway <- species_pathways[[i]]
+    g <- pathwayGraph(pathway)
+    g <- graph_from_graphnel(g)
+    graph[[i]] <- g
+  }
+  x <- as_data_frame(graph[[1]])
+  for (i in 1:length(graph)-1) {
+    x <- rbind(x,as_data_frame(graph[[i+1]]))
+  }
+  x <- x%>% unique()
+  src <- destin <- vector("numeric",nrow(x))
+  for (i in 1:nrow(x)) {
+    src[i] <- unlist(strsplit(x[i,1],":"))[2]
+    destin[i] <- unlist(strsplit(x[i,2],":"))[2]
+  }
+  x[,1] <- src
+  x[,2] <- destin
+  prior_grn <- graph_from_data_frame(x)
+  check_id(prior_grn)
+  return(prior_grn)
 }
-x <- as_data_frame(graph[[1]])
-for (i in 1:length(graph)-1) {
-  x <- rbind(x,as_data_frame(graph[[i+1]]))
-}
-x <- x%>% unique()
-src <- destin <- vector("numeric",nrow(x))
-for (i in 1:nrow(x)) {
-  src[i] <- unlist(strsplit(x[i,1],":"))[2]
-  destin[i] <- unlist(strsplit(x[i,2],":"))[2]
-}
-x[,1] <- src
-x[,2] <- destin
-prior_grn <- graph_from_data_frame(x)
-check_id(prior_grn)
 
 
 ## tf database
