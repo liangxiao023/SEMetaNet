@@ -22,3 +22,11 @@ visNetwork(vis_nodes, vis_edges) %>%
 ## module analysis visualization
 #gprofiler2
 
+## 2023/4/28 功能开发
+
+## kegg analysis / go analysis
+
+library(gprofiler2)
+gost(cls[[23]],sources = "KEGG",organism = "hsapiens")$result
+
+

@@ -20,7 +20,8 @@ get_grn <- function(data, label, species, database_type, database, method="BH", 
 
 }
 
-
+##database -2023/4/28 写完功能+配套check函数
+## user-defined 接口功能+配套check函数
 
 get_prior_grn <- function(data, species, database_type, database){
     DEG_list <- rownames(data)
