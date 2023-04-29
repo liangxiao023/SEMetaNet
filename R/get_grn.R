@@ -1,7 +1,7 @@
 
 ## get network
 
-## ps: 此处data为DEG的expr，记得检查
+## to-do: 此处data为DEG的expr，记得检查
 get_grn <- function(data, label, species, database_type, database, method="BH", alpha=0.05){
     DEG_list <- rownames(data)
     prior_grn <- get_prior_grn(DEG_list, species, database)
@@ -21,7 +21,7 @@ get_grn <- function(data, label, species, database_type, database, method="BH", 
 }
 
 ##database -2023/4/28 写完功能+配套check函数
-## user-defined 接口功能+配套check函数
+## to-do: user-defined 接口功能+配套check函数
 
 get_prior_grn <- function(data, species, database_type, database){
     DEG_list <- rownames(data)
@@ -38,8 +38,8 @@ get_prior_grn <- function(data, species, database_type, database){
 
 
 
-## pathway database
-get_pathway_grn <- function(species, database){
+## pathway database 
+get_pathway_grn <- function(DEG_list,species, database){                                 ## to-do: 把DEG_list整合到函数里
   check_support(species, database)
   species_pathways <- graphtie::pathways(species, database)
   graph <- vector("list",length(species_pathways))
@@ -61,43 +61,45 @@ get_pathway_grn <- function(species, database){
   }
   x[,1] <- src
   x[,2] <- destin
-  prior_grn <- graph_from_data_frame(x)
+  prior_grn <- igraph::graph_from_data_frame(x)
   check_id(prior_grn)
   return(prior_grn)
 }
 
 
-## tf database
+## tf database 
+## to-do: 统一一下各个数据库中先验网络的变量名称
+## to-do: 改check_id()函数，使其输入参数
 
-#POST to ChEA3 server
-payload <- list(query_name = "myQuery", gene_set = DEG_list)
-response <- httr::POST(url = "https://maayanlab.cloud/chea3/api/enrich/", body = payload, encode = "json")
-json <- httr::content(response, "text")
+get_tf_grn <- function(data, DEG_list, top=100, species, database){
+  gene_list <- rownames(data)
+  check_support(species, database)
+  check_id()
+  
+  #POST to ChEA3 server
+  payload <- list(query_name = "myQuery", gene_set = DEG_list)
+  response <- httr::POST(url = "https://maayanlab.cloud/chea3/api/enrich/", body = payload, encode = "json")
+  json <- httr::content(response, "text")
+  results <- jsonlite::fromJSON(json)
 
-#results as list of R dataframes
-results <- jsonlite::fromJSON(json)
+  ## 1. 选择top100的tf（在这一步设置tf数据库的选择参数）
+  switch
 
-#select tf database
+  ## 2. 在gene_list里搜寻在top100的tf
+  gene_list <- rownames(data)
+  gene_list[gene_list %in% results$`Integrated--meanRank`[1:top,3]]
 
-gene_list <- rownames(data)
-
-## 1. 选择top100的tf（在这一步设置数据库的选择参数）
-ifelse
-check_id()
-
-## 2. 在gene_list里搜寻在top100的tf
-top <- 100
-gene_list <- rownames(data)
-gene_list[gene_list %in% results$`Integrated--meanRank`[1:top,3]]
-
-## 3. 取调控关系，转换成图
-tf_net <- data.frame(TF=0,Target=0)
-for (i in 1:top) {
-  tmp <- data.frame(TF=results$`Integrated--meanRank`[i,3],Target=strsplit(results$`Integrated--meanRank`[i,6],","))
-  colnames(tmp) <- c("TF","Target")
-  tf_net <- rbind(tf_net,tmp)
+  ## 3. 取调控关系，转换成图（以ChEA3为例）
+  tf_net <- data.frame(TF=0,Target=0)
+  for (i in 1:top) {
+    tmp <- data.frame(TF=results$`Integrated--meanRank`[i,3],Target=strsplit(results$`Integrated--meanRank`[i,6],","))
+    colnames(tmp) <- c("TF","Target")
+    tf_net <- rbind(tf_net,tmp)
+  }
+  tf_net <- igraph::graph_from_data_frame(tf_net)
+  return(tf_net)
+  
 }
-
 
 
 
