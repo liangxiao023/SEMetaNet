@@ -26,6 +26,7 @@ get_grn <- function(data, label, species, database_type, database, method="BH", 
 get_prior_grn <- function(data, species, database_type, database){
     DEG_list <- rownames(data)
     
+    ##to-do: 加个switch选择一下
     ## pathway database
 
     ## tf database
