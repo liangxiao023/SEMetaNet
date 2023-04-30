@@ -1,0 +1,26 @@
+{
+    "id": "A79C1C8A",
+    "path": "D:/R packages/SEMetaNet/R/check.R",
+    "project_path": "R/check.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1682835190835.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "84,26",
+        "scrollLine": "70"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1682838042,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1682838042453,
+    "read_only": false,
+    "read_only_alternatives": []
+}
